@@ -22,3 +22,29 @@
 ![Изображение из папки](images/image2.png)
 
 
+---
+---
+
+## Bachelor's thesis - Markov Algorithm for Recognizing Uniquely Decodable Codes
+
+### Project Description
+
+This application implements A.A. Markov's algorithm for checking whether an alphabetic code is uniquely decodable. The program analyzes the input code, constructs the corresponding graph, and determines if the code is uniquely decodable. The graph visualization helps understand the code structure and identify potential issues.
+
+
+### Key Features
+
+- Checks code for unique decodability
+- Visualizes the code graph with cycle highlighting
+- Generates example words with ambiguous decoding (if code isn't uniquely decodable)
+- Supports manual code input or file loading
+- Cross-platform (works on Windows and macOS)
+
+
+### Work example 
+
+
+![Изображение из папки](images/image1.png)
+
+
+![Изображение из папки](images/image2.png)
