@@ -101,91 +101,71 @@ def markov_alg(Code):
     print(f"Cycles_finding_time: {end_time3 - start_time3:.6f} seconds")  
     # print(sorted(nx.simple_cycles(G)))
 
+    cycleThrowLambda = None
+    lenmax = 10000
+
+    for cycle in cycles:
+        if 'λ' in cycle:
+            if len(cycle) < lenmax:
+                cycleThrowLambda = cycle
+                lenmax = len(cycle)
+
+
     start_time4 = time.perf_counter() 
+    if cycleThrowLambda != None:
+        ind = cycleThrowLambda.index('λ')
+        ctlt = deque(cycleThrowLambda)
+        ctlt.rotate(len(cycleThrowLambda) - ind)            
+        cycleThrowLambda = list(ctlt)
+        print("Найден цикл:", cycleThrowLambda)
 
-    result = any('λ' in sublist for sublist in cycles)
-
-    if not result:
+    
+    else: 
         flag = 1
-        print("ВЗАИМНО-ОДНОЗНАЧНЫЙ")
-    else:
-        print("НЕ ВЗАИМНО-ОДНОЗНАЧНЫЙ")
-
+    
     end_time4 = time.perf_counter()
     print(f"Cycle_through_lambda_finding_time: {end_time4 - start_time4:.6f} seconds")
 
-    
 
-    # start_time4 = time.perf_counter() 
-    # cycleThrowLambda = None
-    # lenmax = 10000
-    # print(cycles)
 
-    # for cycle in cycles:
-    #     if 'λ' in cycle:
-    #         if len(cycle) < lenmax:
-    #             cycleThrowLambda = cycle
-    #             lenmax = len(cycle)
 
+    word = ""
+    edge_labels = nx.get_edge_attributes(G, 'name')
 
     
-    # if cycleThrowLambda != None:
-    #     ind = cycleThrowLambda.index('λ')
-    #     ctlt = deque(cycleThrowLambda)
-    #     ctlt.rotate(len(cycleThrowLambda) - ind)            
-    #     cycleThrowLambda = list(ctlt)
-    #     print("Найден цикл:", cycleThrowLambda)
+    if flag == 0:
+        n = len(cycleThrowLambda)
 
-    
-    # else: 
-    #     flag = 1
-    
-    # end_time4 = time.perf_counter()
-    # print(f"Cycle_through_lambda_finding_time: {end_time4 - start_time4:.6f} seconds")
+        if n != 2:
+            word += cycleThrowLambda[0]
+            for i in range(0, n-1):
+                word += edge_labels[(cycleThrowLambda[i], cycleThrowLambda[i+1])] + cycleThrowLambda[i+1]
 
+            word += edge_labels[(cycleThrowLambda[n-1], cycleThrowLambda[0])]
 
-
-
-
-    # word = ""
-    # edge_labels = nx.get_edge_attributes(G, 'name')
-
-    
-    # if flag == 0:
-    #     n = len(cycleThrowLambda)
-
-    #     if n != 2:
-    #         word += cycleThrowLambda[0]
-    #         for i in range(0, n-1):
-    #             word += edge_labels[(cycleThrowLambda[i], cycleThrowLambda[i+1])] + cycleThrowLambda[i+1]
-
-    #         word += edge_labels[(cycleThrowLambda[n-1], cycleThrowLambda[0])]
-
-    #     else:
-    #         word += cycleThrowLambda[0] + edge_labels[(cycleThrowLambda[0], 
-    #                                                    cycleThrowLambda[1])] + cycleThrowLambda[1] + edge_labels[(cycleThrowLambda[1],
-    #                                                                                                                cycleThrowLambda[0])]
-    # word = word.replace('λ', '')
+        else:
+            word += cycleThrowLambda[0] + edge_labels[(cycleThrowLambda[0], cycleThrowLambda[1])] + cycleThrowLambda[1] + edge_labels[(cycleThrowLambda[1], cycleThrowLambda[0])]
+    word = word.replace('λ', '')
         
 
     
 
     
-    # curveEdges = []
-    # straightEdges = []
+    curveEdges = []
+    straightEdges = []
 
-    # for u,v in G.edges():
-    #     if (u,v) in G.edges() and (v,u) in G.edges() and edge_labels[(u,v)] != edge_labels[(v,u)]:
-    #         if (u,v) not in curveEdges:
-    #             curveEdges.append((u,v))
-    #         if (v,u) not in curveEdges:
-    #             curveEdges.append((v,u))
-    #     elif (u,v) in G.edges():
-    #         if (u,v) not in straightEdges:
-    #             straightEdges.append((u,v))
-    #     elif (v,u) in G.edges():
-    #         if (v,u) not in straightEdges:
-    #             straightEdges.append((v,u))
+    for u,v in G.edges():
+        if (u,v) in G.edges() and (v,u) in G.edges() and edge_labels[(u,v)] != edge_labels[(v,u)]:
+            if (u,v) not in curveEdges:
+                curveEdges.append((u,v))
+            if (v,u) not in curveEdges:
+                curveEdges.append((v,u))
+        elif (u,v) in G.edges():
+            if (u,v) not in straightEdges:
+                straightEdges.append((u,v))
+        elif (v,u) in G.edges():
+            if (v,u) not in straightEdges:
+                straightEdges.append((v,u))
 
             
 
@@ -193,18 +173,16 @@ def markov_alg(Code):
    
    
 
-    # if flag == 0:
-    #     edge_colors1 = ['blue' if u in cycleThrowLambda and v in cycleThrowLambda 
-    #                     and u!= v and ((u,v) in curveEdges or (v,u) in curveEdges) 
-    #                     else 'black' for (u, v) in curveEdges]
-    #     edge_colors2 = ['blue' if u in cycleThrowLambda and v in cycleThrowLambda 
-    #                     and u!= v and ((u,v) in straightEdges or (v,u) in straightEdges) 
-    #                     else 'black' for (u, v) in straightEdges]
-    # else:
-    #     edge_colors1 = ['black' for (u, v) in curveEdges]
-    #     edge_colors2 = ['black' for (u, v) in straightEdges]
-
-    curveEdges, straightEdges, edge_colors1, edge_colors2, edge_labels = None, None, None, None, None
+    if flag == 0:
+        edge_colors1 = ['blue' if u in cycleThrowLambda and v in cycleThrowLambda 
+                        and u!= v and ((u,v) in curveEdges or (v,u) in curveEdges) 
+                        else 'black' for (u, v) in curveEdges]
+        edge_colors2 = ['blue' if u in cycleThrowLambda and v in cycleThrowLambda 
+                        and u!= v and ((u,v) in straightEdges or (v,u) in straightEdges) 
+                        else 'black' for (u, v) in straightEdges]
+    else:
+        edge_colors1 = ['black' for (u, v) in curveEdges]
+        edge_colors2 = ['black' for (u, v) in straightEdges]
 
     
     return G, flag, Sl, curveEdges, straightEdges, edge_colors1, edge_colors2, edge_labels, word
