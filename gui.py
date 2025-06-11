@@ -142,7 +142,7 @@ class Input_View(CTk.CTkFrame):
 
         
         
-        self.graphic.draw(G, cE, sE, ec1, ec2, el)
+        # self.graphic.draw(G, cE, sE, ec1, ec2, el)
         self.flag = 0
         self.entry.insert(0, "")
 
